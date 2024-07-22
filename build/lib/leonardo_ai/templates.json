@@ -1,0 +1,74 @@
+{
+  "basicimage": {
+    "prompt": "",
+    "model_id": "aa77f04e-3eec-4034-9c07-d0f619684628",
+    "num_images": 1,
+    "width": 1024,
+    "height": 1024,
+    "alchemy": true,
+    "photoReal": true,
+    "photoRealVersion": "v2",
+    "presetStyle": "DYNAMIC",
+    "guidance_scale": 7,
+    "num_inference_steps": 15
+  },
+  "portraitimage": {
+    "prompt": "",
+    "model_id": "aa77f04e-3eec-4034-9c07-d0f619684628",
+    "num_images": 1,
+    "width": 768,
+    "height": 1024,
+    "alchemy": true,
+    "photoReal": true,
+    "photoRealVersion": "v2",
+    "presetStyle": "PORTRAIT",
+    "guidance_scale": 8,
+    "num_inference_steps": 20
+  },
+  "landscapeimage": {
+    "prompt": "",
+    "model_id": "aa77f04e-3eec-4034-9c07-d0f619684628",
+    "num_images": 1,
+    "width": 1024,
+    "height": 768,
+    "alchemy": true,
+    "photoReal": true,
+    "photoRealVersion": "v2",
+    "presetStyle": "NATURE",
+    "guidance_scale": 6,
+    "num_inference_steps": 18,
+    "elements": [
+      {
+        "type": "tree",
+        "position": [512, 256]
+      }
+    ]
+  },
+  "highresimage": {
+    "prompt": "",
+    "model_id": "aa77f04e-3eec-4034-9c07-d0f619684628",
+    "num_images": 1,
+    "width": 2048,
+    "height": 2048,
+    "alchemy": true,
+    "photoReal": true,
+    "photoRealVersion": "v2",
+    "presetStyle": "ARTISTIC",
+    "guidance_scale": 9,
+    "num_inference_steps": 25,
+    "highResolution": true
+  },
+  "artimage": {
+    "prompt": "",
+    "model_id": "aa77f04e-3eec-4034-9c07-d0f619684628",
+    "num_images": 1,
+    "width": 1024,
+    "height": 1024,
+    "alchemy": true,
+    "photoReal": true,
+    "photoRealVersion": "v2",
+    "presetStyle": "ARTISTIC",
+    "guidance_scale": 8,
+    "num_inference_steps": 20
+  }
+}

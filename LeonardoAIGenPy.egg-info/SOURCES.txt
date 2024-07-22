@@ -1,0 +1,13 @@
+MANIFEST.in
+README.md
+setup.py
+LeonardoAIGenPy.egg-info/PKG-INFO
+LeonardoAIGenPy.egg-info/SOURCES.txt
+LeonardoAIGenPy.egg-info/dependency_links.txt
+LeonardoAIGenPy.egg-info/requires.txt
+LeonardoAIGenPy.egg-info/top_level.txt
+leonardo_ai/__init__.py
+leonardo_ai/app.py
+leonardo_ai/leonardo_ai.py
+leonardo_ai/templates.json
+tests/test_loenardo_ai.py
