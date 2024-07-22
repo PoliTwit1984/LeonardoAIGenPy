@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: LeonardoAIGenPy
-Version: 0.1.3
+Version: 0.1.4
 Summary: A Python package for interacting with Leonardo AI for image generation and upscaling.
-Home-page: https://github.com/yourusername/LeonardoAIGenPy
+Home-page: https://github.com/Politwit1984/LeonardoAIGenPy
 Author: Joe Wilson
 Author-email: joe.wilson@live.com
 Classifier: Programming Language :: Python :: 3
