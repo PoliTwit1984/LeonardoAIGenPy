@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="LeonardoAIGenPy",
-    version="0.1.4",
+    version="0.1.5",
     author="Joe Wilson",
     author_email="joe.wilson@live.com",
     description="A Python package for interacting with Leonardo AI for image generation and upscaling.",

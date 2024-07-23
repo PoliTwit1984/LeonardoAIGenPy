@@ -34,15 +34,9 @@
     "alchemy": true,
     "photoReal": true,
     "photoRealVersion": "v2",
-    "presetStyle": "NATURE",
+    "presetStyle": "NEUTRAL",
     "guidance_scale": 6,
-    "num_inference_steps": 18,
-    "elements": [
-      {
-        "type": "tree",
-        "position": [512, 256]
-      }
-    ]
+    "num_inference_steps": 18
   },
   "highresimage": {
     "prompt": "",
@@ -53,7 +47,7 @@
     "alchemy": true,
     "photoReal": true,
     "photoRealVersion": "v2",
-    "presetStyle": "ARTISTIC",
+    "presetStyle": "UNPROCESSED",
     "guidance_scale": 9,
     "num_inference_steps": 25,
     "highResolution": true
@@ -67,7 +61,7 @@
     "alchemy": true,
     "photoReal": true,
     "photoRealVersion": "v2",
-    "presetStyle": "ARTISTIC",
+    "presetStyle": "CREATIVE",
     "guidance_scale": 8,
     "num_inference_steps": 20
   }

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: LeonardoAIGenPy
-Version: 0.1.4
+Version: 0.1.5
 Summary: A Python package for interacting with Leonardo AI for image generation and upscaling.
 Home-page: https://github.com/Politwit1984/LeonardoAIGenPy
 Author: Joe Wilson
@@ -12,13 +12,265 @@ Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 Requires-Dist: requests
 
-# LeonardoAIGenPy
 
-LeonardoAIGenPy is a Python package for interacting with Leonardo AI to generate and upscale images.
+
+# LeonardoAI Class: Detailed Documentation
+
+## Table of Contents
+
+- [LeonardoAI Class: Detailed Documentation](#leonardoai-class-detailed-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Installation](#installation)
+  - [Initialization](#initialization)
+  - [Key Concepts](#key-concepts)
+  - [Methods](#methods)
+    - [generate\_images](#generate_images)
+    - [get\_models](#get_models)
+    - [upscale\_image](#upscale_image)
+    - [create\_motion\_generation](#create_motion_generation)
+    - [improve\_prompt](#improve_prompt)
+    - [get\_user\_info](#get_user_info)
+  - [Error Handling](#error-handling)
+  - [Best Practices](#best-practices)
+  - [Examples](#examples)
+  - [Troubleshooting](#troubleshooting)
+
+## Introduction
+
+The `LeonardoAI` class provides a Python interface to interact with the Leonardo AI API. It allows users to generate, manipulate, and manage AI-generated images with ease. This wrapper simplifies the process of making API calls and handling responses, enabling developers to integrate Leonardo AI's powerful image generation capabilities into their projects.
 
 ## Installation
 
-```bash
-pip install LeonardoAIGenPy
+To install the LeonardoAI wrapper, use pip:
 
+```bash
+pip install leonardoai-wrapper
 ```
+
+## Initialization
+
+To start using the LeonardoAI class, you need to initialize it with your API key:
+
+```python
+from leonardo_ai import LeonardoAI
+
+api_key = "YOUR_API_KEY"
+leonardo = LeonardoAI(api_key=api_key)
+```
+
+Optionally, you can provide a path to a JSON file containing templates:
+
+```python
+leonardo = LeonardoAI(api_key=api_key, template_file="path/to/templates.json")
+```
+
+The template file allows you to predefine settings for different types of image generation tasks.
+
+## Key Concepts
+
+- **API Key**: A unique identifier that authenticates your requests to the Leonardo AI API.
+- **Generation ID**: A unique identifier for each image generation job.
+- **Model ID**: Identifier for the specific AI model used for image generation.
+- **Prompt**: A text description of the image you want to generate.
+- **Templates**: Predefined settings for image generation, stored in a JSON file.
+
+## Methods
+
+### generate_images
+
+Generate images based on a text prompt.
+
+```python
+def generate_images(self, prompt: str, model_id: str = None, num_images: int = 1, width: int = 1024, height: int = 1024, ...) -> Dict:
+```
+
+**Parameters:**
+
+- `prompt` (str): Text description of the image to generate.
+- `model_id` (str, optional): ID of the AI model to use.
+- `num_images` (int, optional): Number of images to generate (default: 1).
+- `width` (int, optional): Width of the generated image(s) (default: 1024).
+- `height` (int, optional): Height of the generated image(s) (default: 1024).
+- ... (other parameters)
+
+**Returns:**
+A dictionary containing the generation ID and image URLs.
+
+**Usage:**
+
+```python
+result = leonardo.generate_images("A beautiful sunset over the ocean")
+print(result['image_urls'])
+```
+
+### get_models
+
+Retrieve a list of available AI models.
+
+```python
+def get_models(self) -> List[Dict]:
+```
+
+**Returns:**
+A list of dictionaries, each containing model information.
+
+**Usage:**
+
+```python
+models = leonardo.get_models()
+for model in models:
+    print(f"Model ID: {model['id']}, Name: {model['name']}")
+```
+
+### upscale_image
+
+Upscale an image using AI algorithms.
+
+```python
+def upscale_image(self, generated_image_id: str) -> Dict:
+```
+
+**Parameters:**
+
+- `generated_image_id` (str): The ID of the generated image to upscale.
+
+**Returns:**
+A dictionary containing the result of the upscaling operation.
+
+**Usage:**
+
+```python
+result = leonardo.upscale_image("generated_image_id_here")
+print(f"Upscaled image URL: {result['url']}")
+```
+
+### create_motion_generation
+
+Create a motion generation from a static image.
+
+```python
+def create_motion_generation(self, image_id: str, is_public: bool = False, ...) -> Dict:
+```
+
+**Parameters:**
+
+- `image_id` (str): The ID of the image to create motion for.
+- `is_public` (bool, optional): Whether the generation is public (default: False).
+- ... (other parameters)
+
+**Returns:**
+A dictionary containing the result of the motion generation.
+
+**Usage:**
+
+```python
+result = leonardo.create_motion_generation("image_id_here")
+print(f"Motion video URL: {result['motionMP4URL']}")
+```
+
+### improve_prompt
+
+Improve a given text prompt using AI.
+
+```python
+def improve_prompt(self, prompt: str) -> Dict:
+```
+
+**Parameters:**
+
+- `prompt` (str): The prompt to improve.
+
+**Returns:**
+A dictionary containing the improved prompt.
+
+**Usage:**
+
+```python
+improved = leonardo.improve_prompt("A cat sitting on a chair")
+print(f"Improved prompt: {improved['prompt']}")
+```
+
+### get_user_info
+
+Retrieve information about the authenticated user.
+
+```python
+def get_user_info(self) -> Dict:
+```
+
+**Returns:**
+A dictionary containing user information.
+
+**Usage:**
+
+```python
+user_info = leonardo.get_user_info()
+print(f"User ID: {user_info['user_id']}")
+```
+
+## Error Handling
+
+The LeonardoAI class uses a custom `LeonardoAIError` exception to handle errors. Always wrap your API calls in try-except blocks:
+
+```python
+try:
+    result = leonardo.generate_images("A beautiful sunset")
+except LeonardoAIError as e:
+    print(f"An error occurred: {e}")
+```
+
+## Best Practices
+
+1. **API Key Security**: Never hardcode your API key in your scripts. Use environment variables or secure vaults.
+2. **Rate Limiting**: Be mindful of API rate limits. Implement proper error handling and backoff strategies.
+3. **Prompt Engineering**: Experiment with different prompts to get the best results. Use the `improve_prompt` method for assistance.
+4. **Model Selection**: Different models excel at different tasks. Use `get_models` to find the best model for your needs.
+5. **Error Handling**: Always handle potential errors to ensure your application's robustness.
+
+## Examples
+
+Here's a comprehensive example that demonstrates several features of the LeonardoAI class:
+
+```python
+from leonardo_ai import LeonardoAI, LeonardoAIError
+import os
+
+# Initialize the client
+api_key = os.environ.get('LEONARDO_API_KEY')
+leonardo = LeonardoAI(api_key)
+
+try:
+    # Improve a prompt
+    improved_prompt = leonardo.improve_prompt("A cat on a beach")
+    print(f"Improved prompt: {improved_prompt['prompt']}")
+
+    # Generate an image
+    generation = leonardo.generate_images(
+        prompt=improved_prompt['prompt'],
+        num_images=1,
+        width=1024,
+        height=1024
+    )
+    print(f"Generation ID: {generation['generation_id']}")
+
+    # Upscale the generated image
+    upscaled = leonardo.upscale_image(generation['image_ids'][0])
+    print(f"Upscaled image URL: {upscaled['url']}")
+
+    # Create a motion generation
+    motion = leonardo.create_motion_generation(generation['image_ids'][0])
+    print(f"Motion video URL: {motion['motionMP4URL']}")
+
+except LeonardoAIError as e:
+    print(f"An error occurred: {e}")
+```
+
+## Troubleshooting
+
+1. **API Key Issues**: Ensure your API key is correct and has the necessary permissions.
+2. **Network Problems**: Check your internet connection and firewall settings.
+3. **Rate Limiting**: If you're hitting rate limits, implement a backoff strategy or reduce your request frequency.
+4. **Unexpected Errors**: Check the Leonardo AI API documentation for any changes or maintenance notifications.
+
+For more information and support, visit the [Leonardo AI API Documentation](https://docs.leonardo.ai/).
