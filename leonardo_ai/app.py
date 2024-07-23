@@ -11,6 +11,7 @@ def main():
     # Delete all generations
     try:
         for attempt in range(2000):
+            # TODO: Document that this is dangerous as it deletes all images permanently
             leonardo.delete_all_generations()
             print("All generations have been successfully deleted.")
     except LeonardoAIError as e:
