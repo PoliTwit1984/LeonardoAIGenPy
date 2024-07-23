@@ -59,6 +59,7 @@ class LeonardoAI:
             print(f"Error loading templates: {e}")
             return {}
 
+    # TODO: Add type hints for method and endpoint
     def _make_request(self, method: str, endpoint: str, params: Dict = {}, payload: Dict = {}) -> Dict:
         """
         Make a request to the Leonardo AI API.
