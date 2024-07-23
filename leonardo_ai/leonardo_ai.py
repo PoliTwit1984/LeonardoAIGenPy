@@ -23,7 +23,7 @@ class LeonardoAI:
         self.base_url = "https://cloud.leonardo.ai/api/rest/v1"
         self.headers = {
             "accept": "application/json",
-            # TODO - Add documentation in the README on how to get the API key.
+            # TODO:  Add documentation in the README on how to get the API key.
             "authorization": f"Bearer {self.api_key}",
             "content-type": "application/json"
         }
