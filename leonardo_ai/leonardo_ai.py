@@ -11,7 +11,7 @@ class LeonardoAIError(Exception):
 
 
 class LeonardoAI:
-    def __init__(self, api_key: str, template_file: str = None):
+    def __init__(self, api_key: str, template_file: str = None):  # TODO: Test template file on load
         """
         Initialize the LeonardoAI client with the provided API key.
         :param api_key: Your Leonardo AI API key
