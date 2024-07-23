@@ -11,7 +11,7 @@ class LeonardoAIError(Exception):
 
 
 class LeonardoAI:
-    def __init__(self, api_key: str, template_file: str = None):  # TODO: Test template file on load
+    def __init__(self, api_key: str, template_file: str = None):
         """
         Initialize the LeonardoAI client with the provided API key.
         :param api_key: Your Leonardo AI API key
@@ -23,7 +23,6 @@ class LeonardoAI:
         self.base_url = "https://cloud.leonardo.ai/api/rest/v1"
         self.headers = {
             "accept": "application/json",
-            # TODO:  Add documentation in the README on how to get the API key.
             "authorization": f"Bearer {self.api_key}",
             "content-type": "application/json"
         }
@@ -124,35 +123,22 @@ class LeonardoAI:
         try:
             response = self._make_request(
                 "GET", f"generations/{generation_id}")
+            # Debugging line
+            print(f"API response for generation {generation_id}: {response}")
+
             generated_images = response.get(
                 'generations_by_pk', {}).get('generated_images', [])
             if not generated_images:
                 raise LeonardoAIError(
                     f"Generation with ID {generation_id} not found in the response")
-            return generated_images
+
+            return response['generations_by_pk']
         except LeonardoAIError as e:
             print(f"Error in get_single_generation: {e}")
             raise
         except Exception as e:
             print(f"Unexpected error in get_single_generation: {e}")
             raise
-
-    def get_models(self) -> List[Dict]:
-        """
-        Get a list of available AI models.
-        :return: List of dictionaries containing model information
-        """
-        try:
-            data = self._make_request("GET", "platformModels")
-            print("API response data:", data)  # Debugging line
-            if isinstance(data, dict) and 'models' in data:
-                return [{'id': model['id'], 'name': model['name'], 'description': model['description']}
-                        for model in data['models']]
-            else:
-                raise LeonardoAIError("Unexpected response structure")
-        except Exception as e:
-            print(f"Error retrieving models: {e}")
-            return []
 
     def generate_images(self,
                         prompt: str,
@@ -192,7 +178,8 @@ class LeonardoAI:
                         transparency: str = None,
                         unzoom: bool = None,
                         unzoomAmount: float = None,
-                        upscaleRatio: float = None) -> Dict:
+                        upscaleRatio: float = None,
+                        template_name: str = None) -> Dict:
         """
         Generate images based on a text prompt.
         :param prompt: Text description of the image to generate
@@ -233,6 +220,7 @@ class LeonardoAI:
         :param unzoom: Whether the generated images should be unzoomed (requires unzoomAmount and init_image_id)
         :param unzoomAmount: How much the image should be unzoomed (requires unzoom and init_image_id)
         :param upscaleRatio: How much the image should be upscaled (Enterprise Only, default: None)
+        :param template_name: Name of the template to use for generation (default: None)
         :return: Dictionary containing generation ID and image URLs (if waited for completion)
         """
         photoreal_v2_models = {
@@ -240,6 +228,24 @@ class LeonardoAI:
             "Leonardo Diffusion XL": "1e60896f-3c26-4296-8ecc-53e2afecc132",
             "Leonardo Vision XL": "5c232a9e-9061-4777-980a-ddc8e65647c6"
         }
+
+        if template_name and template_name in self.templates:
+            template = self.templates[template_name]
+            prompt = template.get("prompt", prompt)
+            model_id = template.get("model_id", model_id)
+            num_images = template.get("num_images", num_images)
+            width = template.get("width", width)
+            height = template.get("height", height)
+            alchemy = template.get("alchemy", alchemy)
+            photoReal = template.get("photoReal", photoReal)
+            photoRealVersion = template.get(
+                "photoRealVersion", photoRealVersion)
+            presetStyle = template.get("presetStyle", presetStyle)
+            guidance_scale = template.get("guidance_scale", guidance_scale)
+            num_inference_steps = template.get(
+                "num_inference_steps", num_inference_steps)
+            init_image_id = template.get("init_image_id", init_image_id)
+            init_strength = template.get("init_strength", init_strength)
 
         if photoRealVersion == "v2":
             if model_id not in photoreal_v2_models.values():
@@ -485,32 +491,6 @@ class LeonardoAI:
                 f"API request failed with status {response.status_code}: {response.text}"
             )
 
-    def get_motion_image_url(self, motion_job_id: str, poll_interval: int = 10, timeout: int = 300) -> str:
-        """
-        Retrieve the URL of the motion generation image.
-
-        :param motion_job_id: The ID of the motion job.
-        :param poll_interval: Time in seconds between status checks (default: 10).
-        :param timeout: Maximum time in seconds to wait for completion (default: 300).
-        :return: URL of the motion image.
-        """
-        job_status = self._poll_job_completion(
-            motion_job_id, "generations-motion-svd", poll_interval, timeout)
-        return job_status['generated_image_variation_generic'][0]['motionMP4URL']
-
-    def get_motion_image(self, motion_job_id: str, poll_interval: int = 10, timeout: int = 300) -> str:
-        """
-        Retrieve the URL of the motion generation image.
-
-        :param motion_job_id: The ID of the motion job.
-        :param poll_interval: Time in seconds between status checks (default: 10).
-        :param timeout: Maximum time in seconds to wait for completion (default: 300).
-        :return: URL of the motion image.
-        """
-        job_status = self._poll_job_completion(
-            motion_job_id, "generations-motion-svd", poll_interval, timeout)
-        return job_status['generated_image_variation_generic'][0]['motionMP4URL']
-
     def get_template(self, template_name: str, templates: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
         """
         Get a specific template by name.
@@ -609,3 +589,74 @@ class LeonardoAI:
         for generation in generations:
             generation_id = generation['id']
             self.delete_generation_by_id(generation_id)
+
+    def create_unzoom(self, image_id: str, is_variation: bool = False) -> Dict:
+        """
+        Create an unzoom variation for the provided image ID.
+
+        :param image_id: The ID of the image to unzoom.
+        :param is_variation: Whether the image is a variation (default: False).
+        :return: Dictionary containing the result of the unzoom operation.
+        """
+        url = f"{self.base_url}/variations/unzoom"
+        payload = {
+            "id": image_id,
+            "isVariation": is_variation
+        }
+        response = requests.post(url, headers=self.headers, json=payload)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise LeonardoAIError(
+                f"API request failed with status {response.status_code}: {response.text}"
+            )
+
+    def upload_init_image(self, image_file_path: str, extension: str = "jpg") -> str:
+        """
+        Upload an init image and return the image ID.
+
+        :param image_file_path: Path to the image file.
+        :param extension: File extension (default: "jpg").
+        :return: Image ID of the uploaded image.
+        """
+        payload = {"extension": extension}
+        response = self._make_request("POST", "init-image", payload=payload)
+
+        fields_str = response['uploadInitImage']['fields']
+        fields = json.loads(fields_str)
+        url = response['uploadInitImage']['url']
+        image_id = response['uploadInitImage']['id']
+
+        with open(image_file_path, 'rb') as image_file:
+            files = {'file': image_file}
+            upload_response = requests.post(url, data=fields, files=files)
+
+        if upload_response.status_code != 204:
+            raise LeonardoAIError("Failed to upload the image")
+
+        return image_id
+
+    def get_motion_image_url_by_generation_id(self, generation_id: str) -> str:
+        """
+        Retrieve the URL of the motion generation image by generation ID.
+
+        :param generation_id: The ID of the motion generation.
+        :return: URL of the motion image.
+        """
+        try:
+            url = f"{self.base_url}/generations/{generation_id}"
+            response = requests.get(url, headers=self.headers)
+            if response.status_code == 200:
+                job_status = response.json()
+                if 'generations_by_pk' in job_status:
+                    for item in job_status['generations_by_pk']['generated_images']:
+                        if item['motionMP4URL']:
+                            return item['motionMP4URL']
+                else:
+                    raise LeonardoAIError(
+                        "Motion generation job not completed or failed.")
+            else:
+                raise LeonardoAIError(
+                    f"API request failed with status {response.status_code}: {response.text}")
+        except Exception as e:
+            raise LeonardoAIError(f"Error retrieving motion image: {e}")
