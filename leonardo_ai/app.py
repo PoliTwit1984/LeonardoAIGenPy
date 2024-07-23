@@ -4,7 +4,7 @@ from leonardo_ai import LeonardoAI, LeonardoAIError
 
 
 def main():
-    api_key = "501cd296-31ae-4f7f-b50a-3736218826b7"
+    api_key = "501cd296-31ae-4f7f-b50a-3736218826b7"  # TODO: HIDE API KEYS
     template_file = os.path.join(os.path.dirname(__file__), 'templates.json')
     leonardo = LeonardoAI(api_key=api_key, template_file=template_file)
 
